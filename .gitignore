@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Stuff generated for ReactJS
+frontend/node_modules
+frontend/static/frontend/main.js
+frontend/package-lock.json
+
+.idea/misc.xml
