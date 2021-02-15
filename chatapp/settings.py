@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'chats.apps.ChatsConfig',
     'frontend',
-    'rest_framework'
+    'rest_framework',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -72,7 +73,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'chatapp.wsgi.application'
-
+ASGI_APPLICATION = "chatapp.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

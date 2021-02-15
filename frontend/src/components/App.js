@@ -1,42 +1,23 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
+import { w3cwebsocket as W3CWebSocket } from "websocket";
+
+const client = new W3CWebSocket(
+    'ws://'
+    + window.location.host
+    + '/ws/chat/'
+    + 'mimi'
+    + '/'
+);
 
 class Messages extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: [],
-      loaded: false,
-      placeholder: "Loading"
-    };
-  }
-
-  componentDidMount() {
-    fetch("chats/messages")
-      .then(response => {
-        if (response.status >= 400) {
-          return this.setState(() => {
-            return { placeholder: "Something went wrong!" };
-          });
-        }
-        return response.json();
-      })
-      .then(data => {
-        this.setState(() => {
-          return {
-            data,
-            loaded: true
-          };
-        });
-      });
-  }
-
   render() {
+    console.log(this.props.messages);
     return (
       <div>
-        {this.state.data.map(message => {
+        {this.props.messages.map(message => {
           return (
-            <div key={message.id}>
+            <div key={message.timestamp}>
               {message.username}({message.timestamp}): {message.text}
             </div>
           );
@@ -63,16 +44,11 @@ class Textfield extends Component {
   }
 
   sendMessage() {
-    const request = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: 'maciek',
-        timestamp: Date.now(),
-        text: this.state.new_message
-      })
-    }
-    fetch('chats/messages/', request);
+    client.send(JSON.stringify({
+        'username': 'maciek',
+        'text': this.state.new_message
+        // type: "userevent"
+      }));
     this.resetNewMessage();
   }
 
@@ -96,11 +72,52 @@ class Textfield extends Component {
 }
 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      messages: [],
+      placeholder: 'Loading'
+    };
+  }
+
+  componentDidMount() {
+    client.onopen = () => {
+      console.log('WebSocket Client connected');
+    };
+    client.onclose = () => {
+      console.error('WebSocket Client closed unexpectedly');
+    };
+    client.onmessage = (e) => {
+      const message = JSON.parse(e.data);
+      this.setState({
+        messages: [...this.state.messages, message]
+      });
+      console.log(this.state.messages);
+    };
+
+    fetch('chats/messages')
+      .then(response => {
+        if (response.status >= 400) {
+          return this.setState(() => {
+            return { placeholder: 'Something went wrong!' };
+          });
+        }
+        return response.json();
+      })
+      .then(messages => {
+        this.setState(() => {
+          return {
+            messages
+          };
+        });
+      });
+  }
+
   render() {
     return (
       <div className="chatapp">
         <div className="messages">
-          <Messages />
+          <Messages messages={this.state.messages}/>
         </div>
         <div className="textfield">
           <Textfield />
