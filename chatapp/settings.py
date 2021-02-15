@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'chats.apps.ChatsConfig',
     'frontend',
     'rest_framework',
-    'channels'
+    'channels',
+    'channels_redis'
 ]
 
 MIDDLEWARE = [
@@ -129,3 +130,12 @@ STATIC_URL = '/static/'
 #         'rest_framework.renderers.JSONRenderer',
 #     )
 # }
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
