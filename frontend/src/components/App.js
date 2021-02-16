@@ -2,83 +2,17 @@ import React, { Component } from "react";
 import { render } from "react-dom";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 
-import { Card, Avatar, Input, Typography } from 'antd';
+import Messages from './Messages.js';
+import Textfield from './Textfield.js';
+
+import { Input, Typography } from 'antd';
 import 'antd/dist/antd.css';
-import './index.css';
+import '../styles/index.css';
 
 const { Search } = Input;
 const { Text } = Typography;
-const { Meta } = Card;
 
-const client = new W3CWebSocket(
-    'ws://'
-    + window.location.host
-    + '/ws/chat/'
-    + 'mimi'
-    + '/'
-);
-
-class Messages extends Component {
-  render() {
-    console.log(this.props.messages);
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: 50 }}>
-        {this.props.messages.map(message =>
-          <Card key={message.timestamp} style={{ width:300, margin: '16px 4px 0 4px', alignSelf: this.props.owner === message.username ? 'flex-end' : 'flex-start' }}>
-            <Meta
-                avatar={
-                  <Avatar style={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>{message.username[0].toUpperCase()}</Avatar>
-                }
-                title={message.username}
-                description={message.text}
-            />
-          </Card>
-        )}
-      </div>
-    );
-  }
-}
-
-class Textfield extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      new_message: ''
-    };
-  }
-
-  resetNewMessage() {
-    this.setState({new_message: ''});
-  }
-
-  updateNewMessage(message) {
-    this.setState({new_message: message});
-  }
-
-  sendMessage() {
-    client.send(JSON.stringify({
-        'username': this.props.username,
-        'text': this.state.new_message
-      }));
-    this.resetNewMessage();
-  }
-
-  render() {
-
-    return (
-        <div className="textfield">
-          <Search
-            placeholder="Type a message"
-            enterButton="Send"
-            value={this.state.new_message}
-            size="large"
-            onChange={e => this.updateNewMessage(e.target.value)}
-            onSearch={() => this.sendMessage()}
-          />
-        </div>
-    );
-  }
-}
+const client = new W3CWebSocket('ws://' + window.location.host + '/ws/chat/' + 'mimi' + '/');
 
 class App extends Component {
   constructor() {
@@ -102,7 +36,6 @@ class App extends Component {
       this.setState({
         messages: [...this.state.messages, message]
       });
-      console.log(this.state.messages);
     };
 
     fetch('chats/messages')
@@ -144,7 +77,7 @@ class App extends Component {
                 <Messages messages={this.state.messages} owner={this.state.username}/>
               </div>
               <div className="textfield">
-                <Textfield username={this.state.username}/>
+                <Textfield username={this.state.username} websocket_client={client}/>
               </div>
             </div>
         }
