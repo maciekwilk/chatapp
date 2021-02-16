@@ -12,6 +12,9 @@ Install webpack and webpack-cli
 Install Babel
 > npm i @babel/core babel-loader @babel/preset-env @babel/preset-react --save-dev
 
+Install css-loader and style-loader
+> npm i css-loader style-loader --save-dev
+
 Install React
 > npm i react react-dom --save-dev
 

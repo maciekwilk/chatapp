@@ -2,6 +2,14 @@ import React, { Component } from "react";
 import { render } from "react-dom";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 
+import { Card, Avatar, Input, Typography } from 'antd';
+import 'antd/dist/antd.css';
+import './index.css';
+
+const { Search } = Input;
+const { Text } = Typography;
+const { Meta } = Card;
+
 const client = new W3CWebSocket(
     'ws://'
     + window.location.host
@@ -14,14 +22,18 @@ class Messages extends Component {
   render() {
     console.log(this.props.messages);
     return (
-      <div>
-        {this.props.messages.map(message => {
-          return (
-            <div key={message.timestamp}>
-              {message.username}({message.timestamp}): {message.text}
-            </div>
-          );
-        })}
+      <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: 50 }}>
+        {this.props.messages.map(message =>
+          <Card key={message.timestamp} style={{ width:300, margin: '16px 4px 0 4px', alignSelf: this.props.owner === message.username ? 'flex-end' : 'flex-start' }}>
+            <Meta
+                avatar={
+                  <Avatar style={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>{message.username[0].toUpperCase()}</Avatar>
+                }
+                title={message.username}
+                description={message.text}
+            />
+          </Card>
+        )}
       </div>
     );
   }
@@ -31,12 +43,12 @@ class Textfield extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      new_message: 'Type a message'
+      new_message: ''
     };
   }
 
   resetNewMessage() {
-    this.setState({new_message: 'Type a message'});
+    this.setState({new_message: ''});
   }
 
   updateNewMessage(message) {
@@ -45,9 +57,8 @@ class Textfield extends Component {
 
   sendMessage() {
     client.send(JSON.stringify({
-        'username': 'maciek',
+        'username': this.props.username,
         'text': this.state.new_message
-        // type: "userevent"
       }));
     this.resetNewMessage();
   }
@@ -55,17 +66,15 @@ class Textfield extends Component {
   render() {
 
     return (
-        <div>
-          <input
-              className="newMessageText"
-              value={this.state.new_message}
-              onChange={e => this.updateNewMessage(e.target.value)}/>
-          <button
-              className="sendMessageButton"
-              onClick={() => this.sendMessage()}
-          >
-            Send
-          </button>
+        <div className="textfield">
+          <Search
+            placeholder="Type a message"
+            enterButton="Send"
+            value={this.state.new_message}
+            size="large"
+            onChange={e => this.updateNewMessage(e.target.value)}
+            onSearch={() => this.sendMessage()}
+          />
         </div>
     );
   }
@@ -75,6 +84,7 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
+      username: '',
       messages: [],
       placeholder: 'Loading'
     };
@@ -115,13 +125,29 @@ class App extends Component {
 
   render() {
     return (
-      <div className="chatapp">
-        <div className="messages">
-          <Messages messages={this.state.messages}/>
-        </div>
-        <div className="textfield">
-          <Textfield />
-        </div>
+      <div className="chat">
+        {this.state.username === '' ?
+            <div style={{ padding: '200px 40px' }}>
+              <div className="title">
+                <Text type="secondary" style={{ fontSize: '36px' }}>ChatUp!</Text>
+              </div>
+              <Search
+                placeholder="Enter username"
+                enterButton="Login"
+                size="large"
+                onSearch={value => this.setState({username: value})}
+              />
+            </div>
+        :
+            <div>
+              <div className="messages">
+                <Messages messages={this.state.messages} owner={this.state.username}/>
+              </div>
+              <div className="textfield">
+                <Textfield username={this.state.username}/>
+              </div>
+            </div>
+        }
       </div>
     );
   }
