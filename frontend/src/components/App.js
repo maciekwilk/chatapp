@@ -12,21 +12,22 @@ import '../styles/index.css';
 const { Search } = Input;
 const { Text } = Typography;
 
-const client = new W3CWebSocket('ws://' + window.location.host + '/ws/chat/' + 'mimi' + '/');
 
 class App extends Component {
+
   constructor() {
     super();
     this.state = {
       username: '',
+      websocketClient: new W3CWebSocket('ws://' + window.location.host + '/ws/chat/' + 'mimi' + '/')
     };
   }
 
   componentDidMount() {
-    client.onopen = () => {
+    this.state.websocketClient.onopen = () => {
       console.log('WebSocket Client connected');
     };
-    client.onclose = () => {
+    this.state.websocketClient.onclose = () => {
       console.error('WebSocket Client closed unexpectedly');
     };
   }
@@ -49,10 +50,10 @@ class App extends Component {
         :
             <div>
               <div className="messages">
-                <Messages messages={this.state.messages} owner={this.state.username}/>
+                <Messages websocketClient={this.state.websocketClient} owner={this.state.username}/>
               </div>
               <div className="textfield">
-                <Textfield username={this.state.username} websocket_client={client}/>
+                <Textfield websocketClient={this.state.websocketClient} username={this.state.username}/>
               </div>
             </div>
         }
