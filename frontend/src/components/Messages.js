@@ -14,6 +14,10 @@ export default class Messages extends Component {
     };
   }
 
+  scrollToBottom() {
+    this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+  }
+
   componentDidMount() {
     this.props.websocketClient.onmessage = (e) => {
       const message = JSON.parse(e.data);
@@ -37,6 +41,8 @@ export default class Messages extends Component {
           };
         });
       });
+
+    this.scrollToBottom();
   }
 
   render() {
