@@ -19,8 +19,6 @@ class App extends Component {
     super();
     this.state = {
       username: '',
-      messages: [],
-      placeholder: 'Loading'
     };
   }
 
@@ -31,29 +29,6 @@ class App extends Component {
     client.onclose = () => {
       console.error('WebSocket Client closed unexpectedly');
     };
-    client.onmessage = (e) => {
-      const message = JSON.parse(e.data);
-      this.setState({
-        messages: [...this.state.messages, message]
-      });
-    };
-
-    fetch('chats/messages')
-      .then(response => {
-        if (response.status >= 400) {
-          return this.setState(() => {
-            return { placeholder: 'Something went wrong!' };
-          });
-        }
-        return response.json();
-      })
-      .then(messages => {
-        this.setState(() => {
-          return {
-            messages
-          };
-        });
-      });
   }
 
   render() {
