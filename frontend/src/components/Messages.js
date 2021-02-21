@@ -27,7 +27,8 @@ export default class Messages extends Component {
       this.scrollToBottom();
     };
 
-    fetch('chats/messages')
+    const chat = this.props.chat;
+    fetch('chats/' + chat + '/messages')
       .then(response => {
         if (response.status >= 400) {
           console.error(response);

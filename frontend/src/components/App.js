@@ -18,12 +18,15 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
+      chat: 'mimi',
       username: '',
-      websocketClient: new W3CWebSocket('ws://' + window.location.host + '/ws/chat/' + 'mimi' + '/')
+      websocketClient: null
     };
   }
 
   componentDidMount() {
+    this.state.websocketClient = new W3CWebSocket('ws://' + window.location.host + '/ws/chat/' + this.state.chat + '/');
+
     this.state.websocketClient.onopen = () => {
       console.log('WebSocket Client connected');
     };
@@ -50,7 +53,7 @@ class App extends Component {
         :
             <div>
               <div className="messages">
-                <Messages websocketClient={this.state.websocketClient} owner={this.state.username}/>
+                <Messages websocketClient={this.state.websocketClient} owner={this.state.username} chat={this.state.chat}/>
               </div>
               <div className="textfield">
                 <Textfield websocketClient={this.state.websocketClient} username={this.state.username}/>

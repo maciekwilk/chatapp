@@ -25,7 +25,8 @@ export default class Textfield extends Component {
     sendMessage() {
         this.props.websocketClient.send(JSON.stringify({
             'username': this.props.username,
-            'text': this.state.new_message
+            'text': this.state.new_message,
+            'timestamp': Date.now()
         }));
         this.resetNewMessage();
     }

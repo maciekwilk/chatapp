@@ -1,14 +1,15 @@
-from django.http import HttpResponse
+import redis
+from django.conf import settings
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
-from .models import Message
-from .serializers import MessageSerializer
-from rest_framework import generics
+from chats import message_store
+
+redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=0)
 
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+@api_view(['GET'])
+def messages(request, chat, *args, **kwargs):
+    items = message_store.get_messages(chat)
+    return Response(items, 200)
 
-
-class MessageListCreate(generics.ListCreateAPIView):
-    queryset = Message.objects.all()
-    serializer_class = MessageSerializer

@@ -3,6 +3,8 @@ from datetime import datetime
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 
+from chats import message_store
+
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -26,7 +28,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     # Receive message from WebSocket
     async def receive(self, text_data):
-        message = json.loads(text_data)
+        message = json.loads(text_data)  # TODO use model
+
+        message_store.add_message(self.room_group_name, text_data)
 
         # Send message to room group
         await self.channel_layer.group_send(
@@ -35,7 +39,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'type': 'chat_message',
                 'username': message['username'],
                 'text': message['text'],
-                'timestamp': str(datetime.now())
+                'timestamp': message['timestamp']
             }
         )
 
