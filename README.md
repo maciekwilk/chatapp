@@ -20,3 +20,9 @@ Install React
 
 Run webpack
 > npm run dev
+
+Start Redis
+> docker run --name some-redis -d redis
+
+Run the application
+> cd ../ && manage.py runserver 8000
