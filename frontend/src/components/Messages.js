@@ -28,7 +28,7 @@ export default class Messages extends Component {
     };
 
     const chat = this.props.chat;
-    fetch('chats/' + chat + '/messages')
+    fetch('http://' + window.location.host + '/chatapp/chats/' + chat + '/messages')
       .then(response => {
         if (response.status >= 400) {
           console.error(response);
