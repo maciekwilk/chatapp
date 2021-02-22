@@ -9,7 +9,6 @@ import { Input, Typography } from 'antd';
 import 'antd/dist/antd.css';
 import '../styles/index.css';
 
-const { Search } = Input;
 const { Text } = Typography;
 
 
