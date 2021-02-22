@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
-import { w3cwebsocket as W3CWebSocket } from "websocket";
 
-import Messages from './Messages.js';
-import Textfield from './Textfield.js';
+import Chat from './Chat.js';
 
-import { Input, Typography } from 'antd';
+import { Button, Typography } from 'antd';
 import 'antd/dist/antd.css';
 import '../styles/index.css';
 
@@ -14,48 +12,31 @@ const { Text } = Typography;
 
 class App extends Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      chat: 'mimi',
-      username: '',
-      websocketClient: null
+      chat: props.chat
     };
   }
 
-  componentDidMount() {
-    this.state.websocketClient = new W3CWebSocket('ws://' + window.location.host + '/ws/chat/' + this.state.chat + '/');
-
-    this.state.websocketClient.onopen = () => {
-      console.log('WebSocket Client connected');
-    };
-    this.state.websocketClient.onclose = () => {
-      console.error('WebSocket Client closed unexpectedly');
-    };
+  createNewChat() {
+    console.log('create the chat room');
   }
 
   render() {
     return (
-      <div className="chat">
-        {this.state.username === '' ?
+      <div className="app">
+        {this.state.chat === '' ?
             <div style={{ padding: '200px 40px' }}>
               <div className="title">
                 <Text type="secondary" style={{ fontSize: '36px' }}>ChatUp!</Text>
               </div>
-              <Search
-                placeholder="Enter username"
-                enterButton="Login"
-                size="large"
-                onSearch={value => this.setState({username: value})}
-              />
+              <Button onClick={this.createNewChat()}>Create new chat room</Button>
             </div>
         :
             <div>
-              <div className="messages">
-                <Messages websocketClient={this.state.websocketClient} owner={this.state.username} chat={this.state.chat}/>
-              </div>
-              <div className="textfield">
-                <Textfield websocketClient={this.state.websocketClient} username={this.state.username}/>
+              <div className="chat">
+                <Chat chat={this.state.chat}/>
               </div>
             </div>
         }
