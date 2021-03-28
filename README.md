@@ -24,5 +24,8 @@ Run webpack
 Start Redis
 > docker run --name some-redis -d redis
 
+Install dependencies
+> pip install -r requirements.txt
+
 Run the application
 > cd ../ && manage.py runserver 8000
