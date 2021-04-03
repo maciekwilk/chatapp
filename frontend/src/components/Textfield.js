@@ -1,8 +1,11 @@
 import React, {Component} from "react";
 
 import {Input} from "antd";
+
 import 'antd/dist/antd.css';
 import '../styles/index.css';
+
+const { Search } = Input;
 
 export default class Textfield extends Component {
     constructor(props) {
@@ -35,7 +38,7 @@ export default class Textfield extends Component {
     render() {
         return (
             <div className="textfield">
-                <Input
+                <Search
                     placeholder="Type a message"
                     enterButton="Send"
                     value={this.state.new_message}

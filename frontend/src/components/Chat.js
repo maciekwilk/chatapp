@@ -9,6 +9,7 @@ import 'antd/dist/antd.css';
 import '../styles/index.css';
 
 const { Text } = Typography;
+const { Search } = Input;
 
 
 export default class Chat extends Component {
@@ -41,7 +42,7 @@ export default class Chat extends Component {
               <div className="title">
                 <Text type="secondary" style={{ fontSize: '36px' }}>ChatUp!</Text>
               </div>
-              <Input
+              <Search
                 placeholder="Enter username"
                 enterButton="Login"
                 size="large"
